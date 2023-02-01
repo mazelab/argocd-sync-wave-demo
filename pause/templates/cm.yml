@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm-{{ randAlpha 6 | lower }}
+data:
+  # property-like keys; each key maps to a simple value
+  exampleKey: "3"

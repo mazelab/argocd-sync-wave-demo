@@ -1,0 +1,41 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: "wave30-applicationset"
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  generators:
+    - git:
+        repoURL: {{ .Values.repo.repoURL }}
+        revision: {{ .Values.repo.revision }}
+        directories:
+          - path: argocd/appset/*
+
+  template:
+    metadata:
+      name: "parent-wave30-{{`{{path.basenameNormalized}}`}}"
+    spec:
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        retry:
+          limit: 3
+      project: "default"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "argocd"
+      source:
+        repoURL: {{ .Values.repo.repoURL }}
+        targetRevision: {{ .Values.repo.revision }}
+        path: '{{`{{path}}`}}'
+        helm:
+          values: |
+            repo:
+              branch: {{ .Values.repo.revision }}
+              url: {{ .Values.repo.repoURL }}
+            wave: 30
+---

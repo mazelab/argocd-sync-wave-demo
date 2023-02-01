@@ -1,0 +1,3 @@
+repo:
+  repoURL: https://github.vodafone.com/VFDE-POE-Engineering/argocd-sync-wave-test.git
+  revision: main

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: nestedGoodApp
+description: sync waves test
+type: application
+version: 1.0.0

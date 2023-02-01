@@ -1,0 +1,5 @@
+name: argocdtestchart
+description: sync waves test
+type: application
+version: 1.0.0
+apiVersion: v2

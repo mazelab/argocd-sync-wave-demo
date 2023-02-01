@@ -1,0 +1,26 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: good-test-{{ .Values.wave }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.repo.url }}
+    path: pause
+    targetRevision: {{ .Values.repo.branch }}
+    helm:
+      values: |
+        repo:
+          branch: {{ .Values.repo.branch }}
+          url: {{ .Values.repo.url }}
+  destination:
+    namespace: argocd-syncwave
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
