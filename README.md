@@ -17,3 +17,45 @@ The health assessment of Application CRD has been removed in version 1.8. If you
 - Application CRs get the health state from there childrens.
 - Sync-Wave configurations in Applications take effect in term of waiting.
 - An errored wave blocks the following waves.
+
+## Installing
+
+Add an Application like the following example in your ArgoCD project.
+
+Checklist:
+
+- namespace in the example is `argocd` => must exist
+
+```yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-cd-wave-test
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mazelab/argocd-sync-wave-demo.git
+    path: argocd
+    targetRevision: main
+    helm:
+      values: |
+        repo:
+          revision: main
+          repoURL: https://github.com/mazelab/argocd-sync-wave-demo.git
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: 2
+```
